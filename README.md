@@ -96,7 +96,17 @@ Run `schema.sql` against your MySQL server to create the database and tables bef
 ```
    > ⚠️ **Security note:** don't commit real credentials to source control. Consider adding `db.properties` to `.gitignore` and providing a `db.properties.example` template instead.
 4. Build and run:
+> set up database
 ```bash
+   sudo apt update
+   sudo apt install mysql-server
+   sudo systemctl status mysql
+   sudo mysql
+```
+Then adding mysql quaries
+
+```bash
+   git clone
    mvn compile
    mvn exec:java -Dexec.mainClass="com.mealapp.app"
 ```

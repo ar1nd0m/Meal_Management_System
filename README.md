@@ -98,7 +98,6 @@ Run `schema.sql` against your MySQL server to create the database and tables bef
 4. Build and run:
 > set up database
 ```bash
-   git clone
    mvn compile
    mvn exec:java -Dexec.mainClass="com.mealapp.app"
 ```

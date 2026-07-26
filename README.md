@@ -88,7 +88,7 @@ Run `schema.sql` against your MySQL server to create the database and tables bef
 ```bash
    sudo apt install mysql
    ALTER USER 'root'@'localhost'
-IDENTIFIED WITH caching_sha2_password BY 'YourStrongPassword';
+IDENTIFIED WITH caching_sha2_password BY 'Mysql03';
    FLUSH PRIVILEGES;
    mysql -u root -p < schema.sql
 ```

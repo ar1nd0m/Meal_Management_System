@@ -71,6 +71,8 @@ CREATE INDEX idx_expenses_date       ON expenses(expense_date);
 CREATE INDEX idx_given_date          ON given(given_date);
 CREATE INDEX idx_before_meal_date    ON before_meal_call(meal_date);
 CREATE INDEX idx_after_meal_date     ON after_meal_call(meal_date);
+INSERT INTO users (username, password, role)
+VALUES ('admin', 'admin123', 'admin');
 
 -- Optional: seed a default admin login
 -- Replace the password with a real hash/value before using this in practice.

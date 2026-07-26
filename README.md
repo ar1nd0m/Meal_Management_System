@@ -97,8 +97,6 @@ IDENTIFIED WITH caching_sha2_password BY 'YourStrongPassword';
    db.url=jdbc:mysql://localhost:3306/meal_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
    db.username=your_username
    db.password=your_password
-   defualt username=admin
-   defualt password=admin123
 ```
    > ⚠️ **Security note:** don't commit real credentials to source control. Consider adding `db.properties` to `.gitignore` and providing a `db.properties.example` template instead.
 4. Build and run:

@@ -86,6 +86,10 @@ Run `schema.sql` against your MySQL server to create the database and tables bef
 ```
 2. Create the database and tables by running the included schema:
 ```bash
+   sudo apt install mysql
+   ALTER USER 'root'@'localhost'
+IDENTIFIED WITH caching_sha2_password BY 'YourStrongPassword';
+   FLUSH PRIVILEGES;
    mysql -u root -p < schema.sql
 ```
 3. Update `src/main/resources/db.properties` with your own database URL, username, and password:
@@ -93,11 +97,14 @@ Run `schema.sql` against your MySQL server to create the database and tables bef
    db.url=jdbc:mysql://localhost:3306/meal_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
    db.username=your_username
    db.password=your_password
+   defualt username=admin
+   defualt password=admin123
 ```
    > ⚠️ **Security note:** don't commit real credentials to source control. Consider adding `db.properties` to `.gitignore` and providing a `db.properties.example` template instead.
 4. Build and run:
 > set up database
 ```bash
+   sudo apt install meaven
    mvn compile
    mvn exec:java -Dexec.mainClass="com.mealapp.app"
 ```

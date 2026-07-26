@@ -98,14 +98,6 @@ Run `schema.sql` against your MySQL server to create the database and tables bef
 4. Build and run:
 > set up database
 ```bash
-   sudo apt update
-   sudo apt install mysql-server
-   sudo systemctl status mysql
-   sudo mysql
-```
-Then adding mysql quaries
-
-```bash
    git clone
    mvn compile
    mvn exec:java -Dexec.mainClass="com.mealapp.app"

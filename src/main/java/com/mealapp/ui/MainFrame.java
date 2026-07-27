@@ -65,19 +65,23 @@ public class MainFrame extends JFrame {
         super("Meal Management System");
 
         // Increase global UI font sizes (applies to most Swing controls)
-        setGlobalFont(new Font("SansSerif", Font.PLAIN, 14));
+        setGlobalFont(new Font("SansSerif", Font.PLAIN, 32));
 
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(screen);
-        setLocation(0, 0);
-
+        setMinimumSize(new Dimension(1000, 700));
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         // use our background panel as content pane
         setContentPane(content);
         content.setLayout(new BorderLayout());
-        content.add(tabs, BorderLayout.CENTER);
+
+        tabs.setFont(UITheme.FONT_BUTTON);
+        tabs.setBackground(new Color(0xF4F6FA));
+
+        JPanel cardWrap = UITheme.card(new BorderLayout());
+        cardWrap.add(tabs, BorderLayout.CENTER);
+        content.add(cardWrap, BorderLayout.CENTER);
 
         // Initialize tabs
         initStudentsTab();
@@ -118,16 +122,17 @@ public class MainFrame extends JFrame {
         JPanel panel = transparentPanel(new BorderLayout());
         studentModel = new DefaultTableModel(new Object[]{"ID", "Name"}, 0);
         tblStudents = new JTable(studentModel);
+        UITheme.styleTable(tblStudents);
         JScrollPane sp = new JScrollPane(tblStudents);
         sp.setOpaque(false);
         sp.getViewport().setOpaque(false);
+        sp.setBorder(BorderFactory.createEmptyBorder());
         panel.add(sp, BorderLayout.CENTER);
 
-        JButton btnAdd = new JButton("Add");
-        JButton btnDelete = new JButton("Delete");
+        JButton btnAdd = UITheme.button("Add");
+        JButton btnDelete = UITheme.button("Delete");
 
-        JPanel top = new JPanel();
-        top.setOpaque(false);
+        JPanel top = UITheme.toolbar();
         top.add(new JLabel("Name:"));
         top.add(txtStudentName);
         top.add(btnAdd);
@@ -215,16 +220,17 @@ public class MainFrame extends JFrame {
         JPanel panel = transparentPanel(new BorderLayout());
         expenseModel = new DefaultTableModel(new Object[]{"ID", "Amount", "Date", "Description"}, 0);
         tblExpenses = new JTable(expenseModel);
+        UITheme.styleTable(tblExpenses);
         JScrollPane sp = new JScrollPane(tblExpenses);
         sp.setOpaque(false);
         sp.getViewport().setOpaque(false);
+        sp.setBorder(BorderFactory.createEmptyBorder());
         panel.add(sp, BorderLayout.CENTER);
 
-        JButton btnAdd = new JButton("Add");
-        JButton btnDelete = new JButton("Delete");
+        JButton btnAdd = UITheme.button("Add");
+        JButton btnDelete = UITheme.button("Delete");
 
-        JPanel top = new JPanel();
-        top.setOpaque(false);
+        JPanel top = UITheme.toolbar();
         top.add(new JLabel("Amount:"));
         top.add(txtAmount);
         top.add(new JLabel("Date (YYYY-MM-DD):"));
@@ -302,9 +308,11 @@ public class MainFrame extends JFrame {
         JPanel panel = transparentPanel(new BorderLayout());
         beforeModel = new DefaultTableModel(new Object[]{"ID", "Student", "Meals", "Date"}, 0);
         tblBefore = new JTable(beforeModel);
+        UITheme.styleTable(tblBefore);
         JScrollPane sp = new JScrollPane(tblBefore);
         sp.setOpaque(false);
         sp.getViewport().setOpaque(false);
+        sp.setBorder(BorderFactory.createEmptyBorder());
         panel.add(sp, BorderLayout.CENTER);
 
         cmbStudentBefore = new JComboBox<>();
@@ -319,11 +327,10 @@ public class MainFrame extends JFrame {
         txtBeforeMeal = new JTextField(5);
         txtBeforeDate = new JTextField(10);
 
-        JButton btnAdd = new JButton("Add");
-        JButton btnDelete = new JButton("Delete");
+        JButton btnAdd = UITheme.button("Add");
+        JButton btnDelete = UITheme.button("Delete");
 
-        JPanel top = new JPanel();
-        top.setOpaque(false);
+        JPanel top = UITheme.toolbar();
         top.add(new JLabel("Student:"));
         top.add(cmbStudentBefore);
         top.add(new JLabel("Meals:"));
@@ -401,9 +408,11 @@ public class MainFrame extends JFrame {
         JPanel panel = transparentPanel(new BorderLayout());
         afterModel = new DefaultTableModel(new Object[]{"ID", "Student", "Meals", "Date"}, 0);
         tblAfter = new JTable(afterModel);
+        UITheme.styleTable(tblAfter);
         JScrollPane sp = new JScrollPane(tblAfter);
         sp.setOpaque(false);
         sp.getViewport().setOpaque(false);
+        sp.setBorder(BorderFactory.createEmptyBorder());
         panel.add(sp, BorderLayout.CENTER);
 
         cmbStudentAfter = new JComboBox<>();
@@ -418,11 +427,10 @@ public class MainFrame extends JFrame {
         txtAfterMeal = new JTextField(5);
         txtAfterDate = new JTextField(10);
 
-        JButton btnAdd = new JButton("Add");
-        JButton btnDelete = new JButton("Delete");
+        JButton btnAdd = UITheme.button("Add");
+        JButton btnDelete = UITheme.button("Delete");
 
-        JPanel top = new JPanel();
-        top.setOpaque(false);
+        JPanel top = UITheme.toolbar();
         top.add(new JLabel("Student:"));
         top.add(cmbStudentAfter);
         top.add(new JLabel("Meals:"));
@@ -500,9 +508,11 @@ public class MainFrame extends JFrame {
         JPanel panel = transparentPanel(new BorderLayout());
         givenModel = new DefaultTableModel(new Object[]{"ID", "Student", "Amount", "Date"}, 0);
         tblGiven = new JTable(givenModel);
+        UITheme.styleTable(tblGiven);
         JScrollPane sp = new JScrollPane(tblGiven);
         sp.setOpaque(false);
         sp.getViewport().setOpaque(false);
+        sp.setBorder(BorderFactory.createEmptyBorder());
         panel.add(sp, BorderLayout.CENTER);
 
         cmbStudentGiven = new JComboBox<>();
@@ -517,11 +527,10 @@ public class MainFrame extends JFrame {
         txtGivenAmount = new JTextField(8);
         txtGivenDate = new JTextField(10);
 
-        JButton btnAdd = new JButton("Add");
-        JButton btnDelete = new JButton("Delete");
+        JButton btnAdd = UITheme.button("Add");
+        JButton btnDelete = UITheme.button("Delete");
 
-        JPanel top = new JPanel();
-        top.setOpaque(false);
+        JPanel top = UITheme.toolbar();
         top.add(new JLabel("Student:"));
         top.add(cmbStudentGiven);
         top.add(new JLabel("Amount:"));
@@ -605,10 +614,10 @@ public class MainFrame extends JFrame {
         JScrollPane sp = new JScrollPane(txtReport);
         sp.setOpaque(false);
         sp.getViewport().setOpaque(false);
+        sp.setBorder(BorderFactory.createEmptyBorder());
         panel.add(sp, BorderLayout.CENTER);
 
-        JPanel top = new JPanel();
-        top.setOpaque(false);
+        JPanel top = UITheme.toolbar();
 
         top.add(new JLabel("From Date (YYYY-MM-DD):"));
         JTextField txtFromDate = new JTextField(10);
@@ -618,8 +627,8 @@ public class MainFrame extends JFrame {
         JTextField txtToDate = new JTextField(10);
         top.add(txtToDate);
 
-        JButton btnGenerate = new JButton("Generate Report");
-        JButton btnExportPdf = new JButton("Export PDF");
+        JButton btnGenerate = UITheme.button("Generate Report");
+        JButton btnExportPdf = UITheme.button("Export PDF");
 
         top.add(btnGenerate);
         top.add(btnExportPdf);
@@ -687,16 +696,17 @@ public class MainFrame extends JFrame {
         // Table to display students
         DefaultTableModel notGivenModel = new DefaultTableModel(new Object[]{"ID", "Name"}, 0);
         JTable tblNotGiven = new JTable(notGivenModel);
+        UITheme.styleTable(tblNotGiven);
         JScrollPane sp = new JScrollPane(tblNotGiven);
         sp.setOpaque(false);
         sp.getViewport().setOpaque(false);
+        sp.setBorder(BorderFactory.createEmptyBorder());
         panel.add(sp, BorderLayout.CENTER);
 
         // Top panel: input month
-        JPanel top = new JPanel();
-        top.setOpaque(false);
+        JPanel top = UITheme.toolbar();
         JTextField txtMonth = new JTextField(7); // format YYYY-MM
-        JButton btnShow = new JButton("Show");
+        JButton btnShow = UITheme.button("Show");
         top.add(new JLabel("Month (YYYY-MM):"));
         top.add(txtMonth);
         top.add(btnShow);
@@ -821,6 +831,7 @@ public class MainFrame extends JFrame {
     private JPanel transparentPanel(LayoutManager lm) {
         JPanel p = new JPanel(lm);
         p.setOpaque(false);
+        p.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
         return p;
     }
 

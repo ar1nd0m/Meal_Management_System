@@ -6,7 +6,7 @@ A desktop Java application for managing shared meal expenses in a mess/hostel/sh
  
 - **User login** with role support (`LoginFrame` → `MainFrame`)
 - **Student management** — add and list mess members
-- **Meal tracking** — record meal counts *before* and *after* the fact for each student/date (the higher of the two is used as the final count, to reconcile early estimates with actual counts)
+- **Meal tracking** — record meal counts *before* and *after* the fact for each student/date (the higher of the two is used as the final count, to reconcile early estimates with actual counts).you can use only one count also.
 - **Expense tracking** — log shared expenses (groceries, bazar cost, etc.) with date and description
 - **Contribution tracking ("Given")** — record money each student has paid in
 - **Automatic meal-rate calculation** — total expenses ÷ total meals for a given date range
@@ -91,8 +91,9 @@ Run `schema.sql` against your MySQL server to create the database and tables bef
 IDENTIFIED WITH caching_sha2_password BY 'Mysql03';
    FLUSH PRIVILEGES;
    mysql -u root -p < schema.sql
+   mysql -u root -p meal_db < sample_test_data.sql
 ```
-3. Update `src/main/resources/db.properties` with your own database URL, username, and password:
+3. Use this database URL, username, and password:
 ```properties
  db.url=jdbc:mysql://localhost:3306/meal_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
 db.username=root

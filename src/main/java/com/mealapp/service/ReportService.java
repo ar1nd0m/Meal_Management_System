@@ -43,9 +43,15 @@ public class ReportService {
         // Sort students by name for consistent output
         students.sort(Comparator.comparing(Student::getName, Comparator.nullsLast(String::compareToIgnoreCase)));
 
-        // Map studentId -> index for arrays
+        // Map studentId -> index for arrays, and studentId -> Student for O(1) lookups
+        // later (avoids re-querying the DB for names we already have in memory).
         Map<Integer, Integer> idx = new HashMap<>();
-        for (int i = 0; i < students.size(); i++) idx.put(students.get(i).getId(), i);
+        Map<Integer, Student> studentById = new HashMap<>();
+        for (int i = 0; i < students.size(); i++) {
+            Student s = students.get(i);
+            idx.put(s.getId(), i);
+            studentById.put(s.getId(), s);
+        }
 
         int n = students.size();
         int days = (int) ChronoUnit.DAYS.between(from, to) + 1;
@@ -54,32 +60,41 @@ public class ReportService {
         int[] totalPerStudent = new int[n];
         int totalMeals = 0;
 
-        // Build date->student->count maps
-        Map<LocalDate, Map<Integer, Integer>> beforeMap = new HashMap<>();
-        Map<LocalDate, Map<Integer, Integer>> afterMap = new HashMap<>();
+        // ===== Optimized calculation =====
+        // Instead of Map<LocalDate, Map<Integer, Integer>> (a hash map of hash maps,
+        // with every count boxed as an Integer), we key each day to a plain int[]
+        // sized to the student count and slot values in directly via the
+        // precomputed idx map. This avoids per-student hashing/boxing entirely
+        // while keeping the same sparse-by-day memory footprint as before (a day
+        // with no recorded meals still costs nothing).
+        Map<LocalDate, int[]> beforeMap = new HashMap<>();
+        Map<LocalDate, int[]> afterMap = new HashMap<>();
 
         for (BeforeMeal b : mealDAO.listBeforeBetween(from, to)) {
-            beforeMap.computeIfAbsent(b.getMealDate(), d -> new HashMap<>())
-                     .put(b.getStudentId(), b.getNumberOfMeal());
+            Integer sIdx = idx.get(b.getStudentId());
+            if (sIdx == null) continue; // defensive: ignore rows for students no longer in the list
+            beforeMap.computeIfAbsent(b.getMealDate(), d -> new int[n])[sIdx] = b.getNumberOfMeal();
         }
 
         for (AfterMeal a : mealDAO.listAfterBetween(from, to)) {
-            afterMap.computeIfAbsent(a.getMealDate(), d -> new HashMap<>())
-                    .put(a.getStudentId(), a.getNumberOfMeal());
+            Integer sIdx = idx.get(a.getStudentId());
+            if (sIdx == null) continue;
+            afterMap.computeIfAbsent(a.getMealDate(), d -> new int[n])[sIdx] = a.getNumberOfMeal();
         }
 
-        // compute final meals (max of before/after per day)
+        // compute final meals (max of before/after per day) — same result as
+        // before, just reading from int[] instead of unboxing HashMap<Integer,Integer>.
         for (int d = 0; d < days; d++) {
             LocalDate day = from.plusDays(d);
-            Map<Integer, Integer> bmap = beforeMap.getOrDefault(day, Collections.emptyMap());
-            Map<Integer, Integer> amap = afterMap.getOrDefault(day, Collections.emptyMap());
+            int[] barr = beforeMap.get(day);
+            int[] aarr = afterMap.get(day);
+            if (barr == null && aarr == null) continue; // nothing recorded this day at all
 
-            for (Student s : students) {
-                int sid = s.getId();
-                int bcount = bmap.getOrDefault(sid, 0);
-                int acount = amap.getOrDefault(sid, 0);
+            for (int i = 0; i < n; i++) {
+                int bcount = barr != null ? barr[i] : 0;
+                int acount = aarr != null ? aarr[i] : 0;
                 int finalMeal = Math.max(bcount, acount);
-                totalPerStudent[idx.get(sid)] += finalMeal;
+                totalPerStudent[i] += finalMeal;
                 totalMeals += finalMeal;
             }
         }
@@ -171,12 +186,21 @@ public class ReportService {
         ));
 
         // non-contributors list (if any)
+        // Optimized: reuse the Student objects we already loaded via studentById
+        // instead of calling studentDAO.findById(sid) once per non-contributor
+        // (that was an N+1 query — one extra round trip to the DB per student).
         List<Integer> nonContributors = givenDAO.studentsNotContributed(from, to);
         if (nonContributors != null && !nonContributors.isEmpty()) {
-            report.append("\nStudents who didn't contribute:\n");
+            List<String> names = new ArrayList<>(nonContributors.size());
             for (int sid : nonContributors) {
-                Student s = studentDAO.findById(sid);
-                report.append(" - ").append(s != null ? s.getName() : ("ID " + sid)).append("\n");
+                Student s = studentById.get(sid);
+                names.add(s != null ? s.getName() : ("ID " + sid));
+            }
+            names.sort(Comparator.nullsLast(String::compareToIgnoreCase));
+
+            report.append("\nStudents who didn't contribute:\n");
+            for (String name : names) {
+                report.append(" - ").append(name).append("\n");
             }
         }
 

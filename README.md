@@ -47,8 +47,9 @@ Meal_Management_System/
 │   ├── service/
 │   │   └── ReportService.java     # Builds the meal/expense report
 │   ├── ui/
-│   │   ├── LoginFrame.java
+│   │   ├── LoginFrame.java        # user login with password
 │   │   └── MainFrame.java         # Main tabbed interface
+|   |   └── UITheme.java           # font and themes are defined here
 │   └── util/
 │       └── DBConnection.java      # JDBC connection helper
 └── src/main/resources/
